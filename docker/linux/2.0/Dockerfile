@@ -3,11 +3,11 @@
 
 FROM golang:1.13.7-alpine3.11 AS builder
 ARG GITHUB_REPO=pottava/aws-s3-proxy
-ARG APP_VERSION=v2.0.0
+ARG SOURCE_BRANCH=v2.0.0
 RUN apk --no-cache add gcc musl-dev git
 RUN go get -u github.com/${GITHUB_REPO}
 WORKDIR /go/src/github.com/${GITHUB_REPO}
-RUN git checkout "${APP_VERSION}" > /dev/null 2>&1
+RUN git checkout "${SOURCE_BRANCH}" > /dev/null 2>&1
 RUN go mod download
 RUN go mod verify
 RUN githash=$(git rev-parse --short HEAD 2>/dev/null) \
