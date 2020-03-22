@@ -5,9 +5,11 @@ FROM golang:1.13.7-alpine3.11 AS builder
 ARG GITHUB_REPO=pottava/aws-s3-proxy
 ARG SOURCE_BRANCH=v2.0.0
 RUN apk --no-cache add gcc musl-dev git
-RUN echo ${GITHUB_REPO} && go get -u github.com/${GITHUB_REPO}
-WORKDIR /go/src/github.com/${GITHUB_REPO}
-RUN echo ${SOURCE_BRANCH} && git checkout "${SOURCE_BRANCH}" > /dev/null 2>&1
+RUN go get -u github.com/pottava/aws-s3-proxy
+WORKDIR /go/src/github.com/pottava/aws-s3-proxy
+RUN git remote add build https://github.com/${GITHUB_REPO} \
+    && git fetch build \
+    && git checkout "${SOURCE_BRANCH}" > /dev/null 2>&1
 RUN go mod download
 RUN go mod verify
 RUN githash=$(git rev-parse --short HEAD 2>/dev/null) \
